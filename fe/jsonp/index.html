@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>jsonp跨域Demo</title>
+</head>
+<body>
+  <h2>jsonp实现跨域</h2>
+  <!-- <script>
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET','http://localhost:8888/');
+    xhr.send();
+  </script> -->
+  <!-- <script>
+    console.log(window.aaaa);
+    setTimeout(() => {console.log(window.aaaa)}, 2000)
+
+  </script> -->
+  <script>
+    function Jsonp(url, cb) {
+      this.callbackName = 'jsonp_'+ Date.now();
+      this.cb = cb;
+      this.url = url;
+      this.init();
+    }
+    Jsonp.prototype.init = function() {
+      if(~this.url.indexOf('?')) {
+        this.url = this.url + '&callback=' + this.callbackName;
+      } else {
+        this.url = this.url + '?callback=' + this.callbackName;
+      }
+      this.createCallback();
+      this.createScript();
+    }
+    Jsonp.prototype.createScript = function() {
+      var script = document.createElement('script');
+      script.src = this.url;
+      script.onload = function() {
+        this.remove();
+        delete window[this.callbackName];
+      }
+      document.body.appendChild(script)
+
+    }
+    Jsonp.prototype.createCallback = function() {
+      window[this.callbackName] = this.cb;
+    }
+    new Jsonp('http://localhost:8888/',function(data){
+      console.log(data,'>>>>>>>>.')
+    });
+  </script>
+  <!-- <script>
+    function aaaa(params) {
+      console.log('后端返回的数据参数是:',params);
+    }
+  </script> -->
+  <!-- <script src="http://localhost:8888/"></script> -->
+</body>
+</html>
